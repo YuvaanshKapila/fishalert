@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <title>Contact Us</title>
+  <script>
+    function showThankYouMessage() {
+      document.getElementById("thank-you-message").style.display = "block"; // Show thank you message
+    }
+  </script>
+</head>
+<body class="bg-orange-500 flex items-center justify-center min-h-screen">
+  <div class="absolute top-4 left-4">
+    <a href="/" class="text-white text-lg">
+      <i class="fas fa-arrow-left"></i> Back
+    </a>
+  </div>
+  <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+    <h1 class="text-orange-500 text-3xl font-bold text-center mb-6">Contact Us</h1>
+    <form action="/contact" method="POST" onsubmit="showThankYouMessage(); return false;">
+      <div class="mb-4">
+        <label for="name" class="block text-gray-700">Name:</label>
+        <input type="text" id="name" name="name" required class="w-full p-2 border border-gray-300 rounded"/>
+      </div>
+      <div class="mb-4">
+        <label for="email" class="block text-gray-700">Email:</label>
+        <input type="email" id="email" name="email" required class="w-full p-2 border border-gray-300 rounded"/>
+      </div>
+      <div class="mb-4">
+        <label for="message" class="block text-gray-700">Message:</label>
+        <textarea id="message" name="message" required class="w-full p-2 border border-gray-300 rounded"></textarea>
+      </div>
+      <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded">Submit</button>
+    </form>
+    
+    
+    <div id="thank-you-message" class="mt-4 text-green-600" style="display: none;">
+      Thank you!
+    </div>
+  </div>
+</body>
+</html>

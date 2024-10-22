@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scam Detection Bot</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        const filterTranscript = (transcript) => {
+            // Remove emojis and special characters
+            return transcript.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '')
+                        .replace(/[^\w\s,.!?-]/g, ''); // Remove other special characters
+        };
+
+        const startRecording = () => {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.interimResults = true; // Enable interim results
+
+            recognition.onresult = async (event) => {
+                const transcript = event.results[0][0].transcript;
+                const filteredTranscript = filterTranscript(transcript); // Filter the transcript
+                document.getElementById("userInput").innerText = `You said: ${filteredTranscript}`;
+                
+                // If final result
+                if (event.results[0].isFinal) {
+                    const response = await fetch('/process', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ text: filteredTranscript }) // Use filtered transcript
+                    });
+                    
+                    const data = await response.json();
+                    document.getElementById("scamAnalysis").innerText = `Scam Analysis: ${data.scam_analysis}`;
+                    speak(data.rebuttal);
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error', event.error);
+                // Restart recognition on error
+                recognition.start();
+            };
+
+            recognition.onend = () => {
+                // Restart recognition when it ends
+                recognition.start();
+            };
+
+            recognition.start(); // Start recognition
+        };
+
+        const speak = (text) => {
+            const utterance = new SpeechSynthesisUtterance(text);
+            speechSynthesis.speak(utterance);
+        };
+
+        const stopSpeaking = () => {
+            speechSynthesis.cancel(); // Stop speaking
+        };
+
+        const validatePhoneNumber = async () => {
+            const phoneNumber = document.getElementById('phoneInput').value;
+            const response = await fetch('/validate_phone', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ phone: phoneNumber })
+            });
+
+            const data = await response.json();
+            const resultDiv = document.getElementById("phoneValidationResult");
+            resultDiv.innerHTML = '';  // Clear previous results
+
+            // Create structured display for validation results
+            const carrier = document.createElement('p');
+            carrier.innerText = `Carrier: ${data.carrier || 'N/A'}`;
+            carrier.className = "text-lg text-blue-600 mb-1";
+
+            const country = document.createElement('p');
+            country.innerText = `Country: ${data.country_name || 'N/A'} (${data.country_code || 'N/A'})`;
+            country.className = "text-lg text-blue-600 mb-1";
+
+            const location = document.createElement('p');
+            location.innerText = `Location: ${data.location || 'N/A'}`;
+            location.className = "text-lg text-blue-600 mb-1";
+
+            const lineType = document.createElement('p');
+            lineType.innerText = `Line Type: ${data.line_type || 'N/A'}`;
+            lineType.className = "text-lg text-blue-600 mb-1";
+
+            const validity = document.createElement('p');
+            validity.innerText = `Valid: ${data.valid ? 'Yes' : 'No'}`;
+            validity.className = "text-lg text-blue-600 mb-1";
+
+            // Append all elements to the result div
+            resultDiv.appendChild(carrier);
+            resultDiv.appendChild(country);
+            resultDiv.appendChild(location);
+            resultDiv.appendChild(lineType);
+            resultDiv.appendChild(validity);
+        };
+
+        // Event listener to stop speaking when the tab is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopSpeaking(); // Stop speaking if the tab is hidden
+            }
+        });
+    </script>
+</head>
+<body class="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-gray-800 font-sans">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg border-4 border-blue-300">
+            <h1 class="text-3xl font-bold text-blue-600 text-center mb-6 shadow-md p-2 rounded-lg bg-blue-50">Scam Detection Bot</h1>
+            <button onclick="startRecording()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300 mb-4">
+                Start Continuous Listening
+            </button>
+            <div id="userInput" class="mt-6 p-4 border-2 border-blue-200 rounded-lg bg-blue-50 shadow-md transition duration-200 hover:shadow-lg hover:border-blue-300"></div>
+            <div id="scamAnalysis" class="mt-4 p-4 border-2 border-green-200 rounded-lg bg-green-50 shadow-md transition duration-200 hover:shadow-lg hover:border-green-300"></div>
+            <button onclick="window.location.href='/'" class="w-full mt-4 bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition duration-200 focus:outline-none focus:ring-4 focus:ring-gray-400">
+                Back to Home
+            </button>
+
+            <!-- Phone Number Validation Section -->
+            <div class="mt-8">
+                <h2 class="text-xl font-semibold text-blue-600 mb-2">Phone Number Validation</h2>
+                <input type="text" id="phoneInput" placeholder="Enter phone number" class="w-full p-2 border border-gray-300 rounded-lg">
+                <button onclick="validatePhoneNumber()" class="w-full mt-2 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-200 focus:outline-none focus:ring-4 focus:ring-green-300">
+                    Validate Phone Number
+                </button>
+                <div id="phoneValidationResult" class="mt-4 p-4 border border-gray-300 rounded-lg bg-gray-50 shadow-md"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

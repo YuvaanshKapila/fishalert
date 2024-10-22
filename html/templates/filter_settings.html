@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-200 min-h-screen flex items-center justify-center">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg max-w-lg w-full">
+        <h1 class="text-3xl font-bold text-center mb-6 text-blue-400">Filter Settings</h1>
+        
+        <form method="post" class="mb-8 space-y-6">
+            <div>
+                <label for="password" class="block text-lg font-medium text-gray-300">Enter Password:</label>
+                <input type="password" id="password" name="password" required class="mt-2 p-3 w-full rounded-lg bg-gray-700 border border-gray-600 focus:ring focus:ring-blue-500 text-white placeholder-gray-400" placeholder="••••••••">
+            </div>
+            <button type="submit" class="w-full bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-semibold py-3 rounded-lg transition ease-in-out duration-300">Submit</button>
+        </form>
+        
+        {% if password_correct %}
+        <div class="space-y-8">
+            <div>
+                <h2 class="text-2xl font-semibold text-blue-400 mb-4">Add Website:</h2>
+                <form action="/add_site" method="post" class="space-y-4">
+                    <input type="text" name="new_site" required class="p-3 w-full rounded-lg bg-gray-700 border border-gray-600 focus:ring focus:ring-blue-500 text-white placeholder-gray-400" placeholder="Enter new website URL">
+                    <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition ease-in-out duration-300">Add Website</button>
+                </form>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-blue-400 mb-4">Remove Website:</h2>
+                <form action="/remove_site" method="post" class="space-y-4">
+                    <select name="site_to_remove" required class="p-3 w-full rounded-lg bg-gray-700 border border-gray-600 focus:ring focus:ring-blue-500 text-white">
+                        {% for site in banned_sites %}
+                            <option value="{{ site }}">{{ site }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg transition ease-in-out duration-300">Remove Website</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+            <p class="text-red-500 font-semibold text-center mt-6">You must enter the correct password to add or remove websites.</p>
+        {% endif %}
+        
+        <div class="mt-8 text-center">
+            <a href="/website_safety" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition ease-in-out duration-300">Back to Website Safety</a>
+        </div>
+    </div>
+</body>
+</html>

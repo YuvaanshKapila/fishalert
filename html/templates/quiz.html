@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Test Your Knowledge</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .button-animation {
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .button-animation:hover {
+            transform: scale(1.1);
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="absolute top-4 left-4">
+        <a href="/" class="text-black font-bold text-lg hover:text-gray-600">Home</a>
+    </div>
+    
+    <h1 class="text-3xl font-bold mb-4 text-center">Test Your Knowledge: Cybersecurity Quiz</h1>
+    
+    <div id="quiz-container" class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto text-center">
+        <div id="question-container" class="mb-4"></div>
+        <button id="next-button" class="bg-blue-500 text-white py-2 px-4 rounded button-animation">Start Quiz</button>
+    </div>
+
+    <h2 class="mt-6 text-lg font-semibold text-center">Learn More About Cybersecurity:</h2>
+    <ul class="mt-2 text-center">
+        <li><a href="https://www.cybersecurity.gov/" class="text-blue-600 underline">Cybersecurity.gov</a></li>
+        <li><a href="https://www.staysafeonline.org/" class="text-blue-600 underline">Stay Safe Online</a></li>
+        <li><a href="https://www.nist.gov/cyberframework" class="text-blue-600 underline">NIST Cybersecurity Framework</a></li>
+    </ul>
+
+    <script>
+        const questions = [
+            {
+                question: "What does a phishing scam usually try to do?",
+                answers: [
+                    { text: "Steal personal information", correct: true },
+                    { text: "Sell you a product", correct: false },
+                ],
+            },
+            {
+                question: "Which of the following is a sign of a scam?",
+                answers: [
+                    { text: "Too good to be true", correct: true },
+                    { text: "Official email address", correct: false },
+                ],
+            },
+            {
+                question: "What should you do if you receive an unsolicited email asking for personal information?",
+                answers: [
+                    { text: "Respond with your information", correct: false },
+                    { text: "Delete it", correct: true },
+                ],
+            },
+            {
+                question: "Which of the following is a common type of scam?",
+                answers: [
+                    { text: "Lottery scams", correct: true },
+                    { text: "Bank security checks", correct: false },
+                ],
+            },
+            {
+                question: "What is two-factor authentication?",
+                answers: [
+                    { text: "A way to secure your account with two passwords", correct: false },
+                    { text: "A security method that requires two forms of verification", correct: true },
+                ],
+            },
+            
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function startQuiz() {
+            setNextQuestion();
+        }
+
+        function setNextQuestion() {
+            resetState();
+            showQuestion(questions[currentQuestionIndex]);
+        }
+
+        function showQuestion(question) {
+            const questionContainer = document.getElementById("question-container");
+            questionContainer.innerText = question.question;
+            question.answers.forEach(answer => {
+                const button = document.createElement("button");
+                button.innerText = answer.text;
+                button.classList.add("bg-gray-300", "text-black", "py-2", "px-4", "rounded", "mb-2", "w-full");
+                button.addEventListener("click", () => selectAnswer(answer));
+                questionContainer.appendChild(button);
+            });
+        }
+
+        function resetState() {
+            const questionContainer = document.getElementById("question-container");
+            questionContainer.innerHTML = "";
+        }
+
+        function selectAnswer(answer) {
+            if (answer.correct) {
+                alert("Correct!");
+            } else {
+                alert("Wrong answer. Try again!");
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                setNextQuestion();
+            } else {
+                alert("Quiz finished!");
+                currentQuestionIndex = 0; // Reset for next round
+                resetState(); // Clear the question container
+            }
+        }
+
+        document.getElementById("next-button").addEventListener("click", startQuiz);
+    </script>
+</body>
+</html>

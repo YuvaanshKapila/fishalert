@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Scam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white flex items-center justify-center min-h-screen">
+    <div class="bg-gray-800 p-6 rounded-lg">
+        <h1 class="text-2xl font-bold mb-4">Check if It's a Scam</h1>
+        <form method="POST" class="mb-4">
+            <textarea name="message" class="w-full p-2 rounded-lg text-black" rows="4" placeholder="Enter the email or text message here..."></textarea>
+            <button type="submit" class="mt-2 bg-blue-500 text-white font-bold py-2 px-4 rounded-lg">Check</button>
+        </form>
+        {% if is_scam is not none %}
+            <div class="mt-4">
+                {% if is_scam %}
+                    <p class="text-red-500">Warning: The message may be a scam!</p>
+                {% else %}
+                    <p class="text-green-500">The message appears to be safe.</p>
+                {% endif %}
+                <p>Message: <em>{{ message }}</em></p>
+            </div>
+        {% endif %}
+        <div class="mt-4">
+            <a href="/" class="text-blue-300 hover:underline">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

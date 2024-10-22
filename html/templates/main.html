@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes backgroundAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-background {
+            background: linear-gradient(270deg, #ff7e5f, #feb47b);
+            background-size: 400% 400%;
+            animation: backgroundAnimation 15s ease infinite;
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: black; }
+        }
+        .typewriter h1 {
+            overflow: hidden;
+            border-right: .15em solid black;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: typing 3.5s steps(30, end), blink-caret .75s step-end infinite;
+        }
+        .button-animation {
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .button-animation:hover {
+            transform: scale(1.1);
+            background-color: #f0f0f0;
+        }
+        .glow {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+        .pulse {
+            animation: pulse 0.2s ease-in-out;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+        .tooltip {
+            display: none;
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        .website-safety-button {
+            position: relative;
+        }
+        .website-safety-button:hover .tooltip {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-black flex items-center justify-center min-h-screen animated-background">
+    <div class="absolute top-4 right-4">
+        <nav class="flex space-x-4">
+            <a href="/" class="text-white font-bold text-lg hover:text-gray-300">Home</a>
+            <a href="/about" class="text-white font-bold text-lg hover:text-gray-300">About</a>
+            <a href="/contact" class="text-white font-bold text-lg hover:text-gray-300">Contact</a>
+            <div class="website-safety-button">
+                <a href="/website_safety" class="text-white font-bold text-lg hover:text-gray-300">Website Safety</a>
+                <div class="tooltip">Built firewall to use for your kids</div>
+            </div>
+            <a href="/check_scam" class="text-white font-bold text-lg hover:text-gray-300">Check Email/Text Scam</a>
+        </nav>
+    </div>
+    
+    <div id="initial-screen" class="text-center fade-in">
+        <div class="bg-white py-4 px-8 rounded-full inline-block mb-4 typewriter">
+            <h1 class="text-black font-bold text-3xl inline-block">Fish</h1>
+            <h1 class="text-red-600 font-bold text-3xl inline-block">Alert</h1>
+        </div>
+    </div>
+
+    <div id="main-content" class="hidden text-center">
+        <div class="relative">
+            <div class="absolute top-0 right-0">
+                <img alt="Shield with fish logo" class="w-12 h-12" src="https://storage.googleapis.com/a1aa/image/54le8ibxrzQgEixXlHlO6GqCffYGABC7Y1Fs9rFiToWcViRnA.jpg"/>
+            </div>
+            <div id="security-circle" class="bg-red-800 rounded-full w-96 h-96 flex items-center justify-center mx-auto glow cursor-pointer" onclick="showRandomFact()">
+                <div class="text-white text-center">
+                    <h1 class="text-6xl font-bold">Scam</h1>
+                    <h1 class="text-6xl font-bold">Detector</h1>
+                </div>
+            </div>
+            <div id="fact-display" class="mt-4 text-white text-lg hidden"></div>
+        </div>
+        
+        <a href="{{ url_for('scam_protection') }}">
+            <button class="mt-4 bg-white text-black font-bold py-2 px-4 rounded-full button-animation">Next</button>
+        </a>
+        
+        <div class="mt-6">
+            <p class="text-white font-light text-sm">Your safety is our priority.</p>
+        </div>
+
+        <a href="{{ url_for('quiz') }}">
+            <button class="mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded-full button-animation">Test Your Knowledge</button>
+        </a>
+    </div>
+    
+    <script>
+        const securityFacts = [
+            "Always verify the sender's email address.",
+            "Look for spelling and grammatical errors in emails.",
+            "Do not share personal information over email.",
+            "Use two-factor authentication wherever possible.",
+            "Keep your software and operating systems updated.",
+            "Use strong, unique passwords for different accounts.",
+            "Be cautious of unsolicited attachments.",
+            "Check website URLs carefully before entering sensitive information.",
+            "Beware of phishing attempts on social media.",
+            "Never click on suspicious links.",
+            "Regularly monitor your bank and credit card statements.",
+            "Use security software to protect your devices.",
+            "Backup important data regularly.",
+            "Educate yourself about the latest online scams.",
+            "Use privacy settings on social media to protect your information.",
+            "Be cautious when using public Wi-Fi networks.",
+            "Limit the amount of personal information shared online.",
+            "Review the privacy policies of websites you use.",
+            "Report suspicious emails or messages to your email provider.",
+            "Trust your instincts—if something seems off, it probably is.",
+            "Stay informed about cybersecurity threats."
+        ];
+
+        function showRandomFact() {
+            const randomIndex = Math.floor(Math.random() * securityFacts.length);
+            const factDisplay = document.getElementById('fact-display');
+            factDisplay.innerText = securityFacts[randomIndex];
+            factDisplay.classList.remove('hidden');
+            factDisplay.classList.add('fade-in');  
+
+            const circle = document.getElementById('security-circle');
+            circle.classList.add('pulse');  
+            
+            setTimeout(() => {
+                circle.classList.remove('pulse');
+            }, 200);  
+        }
+
+        setTimeout(() => {
+            document.getElementById('initial-screen').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+            document.getElementById('main-content').classList.add('fade-in');
+        }, 3500);
+    </script>
+</body>
+</html>
